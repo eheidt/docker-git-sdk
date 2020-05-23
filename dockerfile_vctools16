@@ -1,3 +1,4 @@
+# https://github.com/MicrosoftDocs/visualstudio-docs/blob/master/docs/install/build-tools-container.md
 # escape=`
 
 FROM wmcdevhub.azurecr.io/git-sdk:latest
@@ -6,7 +7,7 @@ FROM wmcdevhub.azurecr.io/git-sdk:latest
 SHELL ["cmd", "/S", "/C"]
 
 # Download the Build Tools bootstrapper.
-ADD https://aka.ms/vs/15/release/vs_buildtools.exe C:\TEMP\vs_buildtools.exe
+ADD https://aka.ms/vs/16/release/vs_buildtools.exe C:\TEMP\vs_buildtools.exe
 
 # Set up environment to collect install errors.
 COPY Install.cmd C:\TEMP\
@@ -22,13 +23,6 @@ RUN C:\TEMP\Install.cmd C:\TEMP\vs_buildtools.exe --quiet --wait --norestart --n
  --add Microsoft.VisualStudio.Workload.VCTools --includeRecommended`
  --add Microsoft.Component.MSBuild `
  --installPath C:\BuildTools
-
-RUN C:\TEMP\Install.cmd C:\TEMP\vs_buildtools.exe --quiet --wait --norestart --nocache `
- --channelUri C:\TEMP\VisualStudio.chman `
- --installChannelUri C:\TEMP\VisualStudio.chman `
- --add Microsoft.Component.MSBuild `
- --installPath C:\BuildTools
-
 
 RUN C:\\BuildTools\\Common7\\Tools\\VsDevCmd.bat && set > vars.txt
 RUN for /F "tokens=1,* delims== " %a in (vars.txt) do powershell -Command Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name '%a' -Value '%b'  

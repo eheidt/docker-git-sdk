@@ -1,0 +1,38 @@
+# escape=`
+
+FROM wmcdevhub.azurecr.io/git-sdk:latest
+
+# Restore the default Windows shell for correct batch processing.
+SHELL ["cmd", "/S", "/C"]
+
+# Download the Build Tools bootstrapper.
+ADD https://aka.ms/vs/15/release/vs_buildtools.exe C:\TEMP\vs_buildtools.exe
+
+# Set up environment to collect install errors.
+COPY Install.cmd C:\TEMP\
+ADD https://aka.ms/vscollect.exe C:\TEMP\collect.exe
+
+# Download channel for fixed install.
+ARG CHANNEL_URL=https://aka.ms/vs/15/release/channel
+ADD ${CHANNEL_URL} C:\TEMP\VisualStudio.chman
+
+RUN C:\TEMP\Install.cmd C:\TEMP\vs_buildtools.exe --quiet --wait --norestart --nocache `
+ --channelUri C:\TEMP\VisualStudio.chman `
+ --installChannelUri C:\TEMP\VisualStudio.chman `
+ --add Microsoft.VisualStudio.Workload.VCTools --includeRecommended`
+ --add Microsoft.Component.MSBuild `
+ --installPath C:\BuildTools
+
+RUN C:\TEMP\Install.cmd C:\TEMP\vs_buildtools.exe --quiet --wait --norestart --nocache `
+ --channelUri C:\TEMP\VisualStudio.chman `
+ --installChannelUri C:\TEMP\VisualStudio.chman `
+ --add Microsoft.Component.MSBuild `
+ --installPath C:\BuildTools
+
+
+RUN C:\\BuildTools\\Common7\\Tools\\VsDevCmd.bat && set > vars.txt
+RUN for /F "tokens=1,* delims== " %a in (vars.txt) do powershell -Command Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name '%a' -Value '%b'  
+
+# Define the entry point for the docker container.
+# This entry point starts the developer command prompt and launches the PowerShell shell.
+# ENTRYPOINT ["C:\\BuildTools\\Common7\\Tools\\VsDevCmd.bat", "&&", "powershell.exe", "-NoLogo", "-ExecutionPolicy", "Bypass"]

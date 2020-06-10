@@ -9,7 +9,7 @@ WORKDIR C:\git-sdk-64
 RUN setup-git-sdk.bat
 WORKDIR C:\
 
-RUN setx /m path "C:\git-sdk-64\usr\bin\;%path%"
+RUN setx /m path "C:\git-sdk-64\cmd\;C:\git-sdk-64\usr\bin\;%path%"
 
 RUN curl https://nodejs.org/dist/v12.16.2/node-v12.16.2-x64.msi -o c:\nodejs.msi & `
     msiexec /qn /l* C:\node-log.txt /i c:\nodejs.msi

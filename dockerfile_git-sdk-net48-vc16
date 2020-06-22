@@ -1,5 +1,3 @@
-# https://github.com/MicrosoftDocs/visualstudio-docs/blob/master/docs/install/build-tools-container.md
-# https://docs.microsoft.com/de-de/visualstudio/install/workload-component-id-vs-build-tools?view=vs-2019
 # escape=`
 
 FROM wmcdevhub.azurecr.io/git-sdk:latest

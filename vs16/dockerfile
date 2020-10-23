@@ -15,7 +15,6 @@ ADD https://aka.ms/vscollect.exe C:\TEMP\collect.exe
 RUN C:\TEMP\Install.cmd C:\TEMP\vs_buildtools.exe --quiet --wait --norestart --nocache `
  --add Microsoft.VisualStudio.Workload.VCTools --includeRecommended`
  --add Microsoft.VisualStudio.Component.VC.ATLMFC`
- --add Microsoft.VisualStudio.Component.VC.v141.x86.x64`
  --add Microsoft.Component.MSBuild `
  --remove Microsoft.VisualStudio.Component.Windows10SDK.10240 `
  --remove Microsoft.VisualStudio.Component.Windows10SDK.10586 `
@@ -23,6 +22,9 @@ RUN C:\TEMP\Install.cmd C:\TEMP\vs_buildtools.exe --quiet --wait --norestart --n
  --remove Microsoft.VisualStudio.Component.Windows81SDK `
  --installPath C:\BuildTools
 
+RUN C:\TEMP\Install.cmd C:\TEMP\vs_buildtools.exe --quiet --wait --norestart --nocache `
+ --add Microsoft.VisualStudio.Workload.WebBuildTools --includeRecommended`
+ --installPath C:\BuildTools
 
 RUN C:\\BuildTools\\Common7\\Tools\\VsDevCmd.bat && set > vars.txt
 RUN for /F "tokens=1,* delims== " %a in (vars.txt) do powershell -Command Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name '%a' -Value '%b'  
